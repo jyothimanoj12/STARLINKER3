@@ -1,0 +1,36 @@
+{% extends 'starlinker/base.html' %}
+
+
+{% block title %}Space Agencies{% endblock %}
+
+{% block content %}
+
+<h2 class="text-center text-light mb-4">Space Agencies</h2>
+
+<div class="row g-4">
+    {% for agency in agencies %}
+    <div class="col-md-4">
+        <div class="card bg-dark text-light border border-secondary">
+            {% if agency.logo %}
+            <img src="{{ agency.logo.url }}" class="card-img-top"
+                 style="height:150px; object-fit:contain; background:#0b1120;">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ agency.name }}</h5>
+                <p class="small text-info">{{ agency.country }}</p>
+                {% if agency.founded %}
+                <p>Founded: {{ agency.founded }}</p>
+                {% endif %}
+                {% if agency.website %}
+                <a href="{{ agency.website }}" target="_blank" class="btn btn-outline-info btn-sm">
+                    Visit Website
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
+

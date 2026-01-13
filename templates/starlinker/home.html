@@ -1,0 +1,44 @@
+{% extends "starlinker/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container text-center py-5">
+
+    <!-- HERO TEXT -->
+    <h1 class="display-5 fw-bold mb-3">
+        🚀 Explore Space Like Never Before
+    </h1>
+
+    <p class="lead text-secondary mb-4">
+        Track missions, satellites, astronauts & AI-powered insights
+    </p>
+
+    <!-- GLOBE VIDEO -->
+    <div class="d-flex justify-content-center mb-4">
+        <video
+            autoplay
+            muted
+            loop
+            playsinline
+            class="globe-video shadow-lg rounded"
+        >
+            <source src="{% static 'videos/globe.mp4' %}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <!-- CTA BUTTON -->
+    <a href="{% url 'missions' %}" class="btn btn-primary btn-lg px-4">
+        Explore Missions 
+    </a>
+
+</div>
+
+{% endblock %}
+
+
+
+
+
+
+

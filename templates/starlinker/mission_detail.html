@@ -1,0 +1,92 @@
+{% extends 'starlinker/base.html' %}
+
+{% block title %}{{ mission.name }} | Mission Details{% endblock %}
+
+{% block content %}
+
+<div class="row">
+
+    <!-- Mission Info -->
+    <div class="col-md-12 text-light">
+        <h2 class="fw-bold">{{ mission.name }}</h2>
+        <p class="text-info">{{ mission.agency.name }}</p>
+
+        <p><strong>Status:</strong> {{ mission.status }}</p>
+
+        <p>
+            <strong>Launch Date:</strong>
+            {% if mission.launch_date %}
+                {{ mission.launch_date }}
+            {% else %}
+                Not available
+            {% endif %}
+        </p>
+
+        <p><strong>Orbit Type:</strong> {{ mission.get_orbit_type_display }}</p>
+
+        <p class="mt-3">{{ mission.description }}</p>
+
+        {% if user.is_authenticated %}
+            {% if is_favorite %}
+                <form method="POST" action="{% url 'remove_favorite' mission.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn-warning">Remove from Favourites</button>
+                </form>
+            {% else %}
+                <form method="POST" action="{% url 'add_favorite' mission.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-info">Add to Favourites</button>
+                </form>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+<hr class="border-secondary my-4">
+
+<!-- 🧠 AI SPACE EVENT INTELLIGENCE -->
+{% if ai_insights %}
+<div class="p-4 mb-4 border border-info rounded bg-dark text-light">
+    <h4 class="text-info">🧠 AI Mission Intelligence</h4>
+    <ul>
+        {% for insight in ai_insights %}
+            <li>{{ insight }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<!-- 🛰️ AI ORBIT BEHAVIOR ANALYSIS -->
+{% if orbit_analysis %}
+<div class="p-4 mb-4 border border-warning rounded bg-dark text-light">
+    <h4 class="text-warning">🛰️ AI Orbit Analysis</h4>
+    <p>{{ orbit_analysis }}</p>
+</div>
+{% endif %}
+
+<hr class="border-secondary my-4">
+
+<!-- Satellites -->
+<h4 class="text-light">Satellites Associated with this Mission</h4>
+
+{% if satellites %}
+<ul class="list-group list-group-flush">
+    {% for satellite in satellites %}
+        <li class="list-group-item bg-dark text-light border-secondary">
+            <strong>{{ satellite.name }}</strong><br>
+            <small>
+                Orbit Type: {{ satellite.orbit_type }} |
+                Purpose: {{ satellite.purpose }}
+            </small>
+        </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p class="text-muted">No satellite information available.</p>
+{% endif %}
+
+{% endblock %}
+
+
+
+

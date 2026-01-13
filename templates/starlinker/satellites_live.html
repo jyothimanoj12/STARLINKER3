@@ -1,0 +1,57 @@
+{% extends 'starlinker/base.html' %}
+
+{% block title %}Live Satellites{% endblock %}
+
+{% block content %}
+
+<h2 class="text-center text-light mb-3">🛰 Live Satellite Tracker</h2>
+
+<p class="text-light text-center mb-3">
+    Select a satellite to track its live position.
+</p>
+
+<div class="mb-3 text-center">
+    <select id="sat-select" class="form-select w-auto d-inline-block">
+        <option value="25544">ISS (ZARYA)</option>
+        <option value="20580">Hubble Space Telescope</option>
+        <option value="43013">NOAA-20</option>
+        <option value="36516">Terra</option>
+    </select>
+</div>
+
+<div id="sat-map" style="height: 500px; border-radius: 10px; overflow: hidden;"></div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    let map = L.map('sat-map').setView([0, 0], 2);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 8,
+    }).addTo(map);
+
+    let marker = L.marker([0, 0]).addTo(map);
+
+    function updatePosition() {
+        const satId = document.getElementById("sat-select").value;
+        const url = `https://api.wheretheiss.at/v1/satellites/${satId}`;
+
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                const lat = data.latitude;
+                const lon = data.longitude;
+                marker.setLatLng([lat, lon]);
+                map.setView([lat, lon]);
+            })
+            .catch(err => console.log(err));
+    }
+
+    updatePosition();
+    setInterval(updatePosition, 5000);
+
+    document.getElementById("sat-select").addEventListener("change", updatePosition);
+</script>
+
+{% endblock %}
+

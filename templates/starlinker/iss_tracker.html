@@ -1,0 +1,39 @@
+{% extends 'starlinker/base.html' %}
+
+{% block title %}ISS Live Tracker{% endblock %}
+
+{% block content %}
+
+<h2 class="text-center text-light mb-3">🛰 ISS Live Tracker</h2>
+
+<div id="iss-map" style="height: 500px; border-radius: 10px; overflow: hidden;"></div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    let map = L.map('iss-map').setView([0, 0], 2);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 5,
+    }).addTo(map);
+
+    let issMarker = L.marker([0, 0]).addTo(map);
+
+    function updateISS() {
+        fetch("https://api.wheretheiss.at/v1/satellites/25544")
+            .then(res => res.json())
+            .then(data => {
+                const lat = data.latitude;
+                const lon = data.longitude;
+                issMarker.setLatLng([lat, lon]);
+                map.setView([lat, lon]);
+            })
+            .catch(err => console.log(err));
+    }
+
+    updateISS();
+    setInterval(updateISS, 5000);
+</script>
+
+{% endblock %}
+

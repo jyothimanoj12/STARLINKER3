@@ -1,0 +1,96 @@
+{% extends 'starlinker/base.html' %}
+
+{% block title %}Live Astronauts in Space{% endblock %}
+
+{% block content %}
+
+<h2 class="text-center text-light mb-3">🧑‍🚀 Live Astronauts in Space</h2>
+<p class="text-center text-muted mb-4">
+    Data fetched live from a public space API (Open Notify).
+</p>
+
+<div class="col-md-8 mx-auto">
+
+    <!-- Card wrapper -->
+    <div class="card bg-dark text-light border border-secondary" style="border-radius: 12px;">
+        <div class="card-body">
+
+            <!-- Total count -->
+            <h5 class="card-title mb-3">
+                People in space right now:
+                <span id="astro-count" class="text-info">Loading...</span>
+            </h5>
+
+            <!-- Loading / error message -->
+            <p id="astro-status" class="text-muted">Fetching data…</p>
+
+            <!-- Astronaut list -->
+            <ul id="astro-list" class="list-group list-group-flush">
+                <!-- Filled by JavaScript -->
+            </ul>
+
+        </div>
+    </div>
+</div>
+
+<script>
+// NOTE: This API returns JSON like:
+// { "number": 10, "people": [ { "name": "...", "craft": "ISS" }, ... ], "message": "success" }
+
+const countSpan = document.getElementById("astro-count");
+const statusP = document.getElementById("astro-status");
+const listEl = document.getElementById("astro-list");
+
+// Helper to create list items
+function addAstronaut(name, craft) {
+    const li = document.createElement("li");
+    li.className = "list-group-item bg-dark text-light border-secondary d-flex justify-content-between";
+    li.innerHTML = `<span>${name}</span><span class="badge bg-info">${craft}</span>`;
+    listEl.appendChild(li);
+}
+
+function fetchAstronauts() {
+    statusP.textContent = "Fetching latest data…";
+
+    // Open Notify API
+    fetch("http://api.open-notify.org/astros.json")
+        .then(response => response.json())
+        .then(data => {
+            if (data.message !== "success") {
+                throw new Error("API did not return success");
+            }
+
+            // Update count
+            countSpan.textContent = data.number;
+
+            // Clear old list
+            listEl.innerHTML = "";
+
+            if (data.people.length === 0) {
+                statusP.textContent = "No astronauts currently in space (API returned zero).";
+                return;
+            }
+
+            statusP.textContent = `Last updated just now.`;
+
+            // Add each astronaut
+            data.people.forEach(person => {
+                addAstronaut(person.name, person.craft);
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            statusP.textContent = "Could not fetch astronaut data. Please try again later.";
+            countSpan.textContent = "–";
+        });
+}
+
+// Initial load
+fetchAstronauts();
+
+// Optional: refresh every 60 seconds
+setInterval(fetchAstronauts, 60000);
+</script>
+
+{% endblock %}
+

@@ -1,0 +1,30 @@
+{% extends 'starlinker/base.html' %}
+
+{% block title %}My Missions{% endblock %}
+
+{% block content %}
+
+<h2 class="text-center text-light mb-4">⭐ My Favourite Missions</h2>
+
+<div class="row g-4">
+    {% for mission in missions %}
+    <div class="col-md-4">
+        <div class="card bg-dark text-light border border-secondary">
+            {% if mission.image %}
+            <img src="{{ mission.image.url }}" class="card-img-top"
+                 style="height:180px; object-fit:cover;">
+            {% endif %}
+            <div class="card-body">
+                <h5>{{ mission.name }}</h5>
+                <p class="text-info small">{{ mission.agency.name }}</p>
+                <a href="{% url 'mission_detail' mission.id %}"
+                   class="btn btn-outline-info btn-sm">View</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-center text-muted">You haven't added any favourite missions yet.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

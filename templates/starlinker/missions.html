@@ -1,0 +1,90 @@
+{% extends "starlinker/base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="text-center mb-4">🚀 Space Missions Explorer</h2>
+
+    <!-- FILTER BAR -->
+    <form method="get" class="row g-2 mb-4">
+
+        <div class="col-md-3">
+            <input type="text"
+                   name="search"
+                   class="form-control"
+                   placeholder="Search missions"
+                   value="{{ search }}">
+        </div>
+
+        <div class="col-md-2">
+            <select name="status" class="form-select">
+                <option value="">All Status</option>
+                <option value="Success">Success</option>
+                <option value="Failure">Failure</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <select name="agency" class="form-select">
+                <option value="">All Agencies</option>
+                {% for agency in agencies %}
+                    <option value="{{ agency.id }}">{{ agency.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <select name="year" class="form-select">
+                <option value="">All Years</option>
+                {% for y in years %}
+                    <option value="{{ y }}">{{ y }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <select name="orbit" class="form-select">
+                <option value="">All Orbits</option>
+                <option value="LEO">LEO</option>
+                <option value="MEO">MEO</option>
+                <option value="GEO">GEO</option>
+            </select>
+        </div>
+
+        <div class="col-md-1">
+            <button class="btn btn-primary w-100">Apply</button>
+        </div>
+
+    </form>
+
+    <!-- MISSIONS GRID -->
+    <div class="row">
+        {% for mission in missions %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm bg-dark text-light">
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ mission.name }}</h5>
+                        <p class="card-text">
+                            <strong>Agency:</strong> {{ mission.agency.name }}<br>
+                            <strong>Year:</strong> {{ mission.launch_date|date:"Y" }}<br>
+                            <strong>Orbit:</strong> {{ mission.orbit_type }}
+                        </p>
+
+                        <a href="{% url 'mission_detail' mission.id %}"
+                           class="btn btn-outline-info btn-sm">
+                            View
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-center">No missions found.</p>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}
+

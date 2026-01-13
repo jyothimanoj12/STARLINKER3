@@ -1,0 +1,53 @@
+{% extends 'starlinker/base.html' %}
+
+{% block title %}AI Assistant{% endblock %}
+
+{% block content %}
+
+<h2 class="text-center text-light mb-3">🤖 AI Space Assistant</h2>
+<p class="text-center text-muted mb-4">
+    Ask any space-related question (powered by Wikipedia).
+</p>
+
+<div class="col-md-8 mx-auto">
+
+    <div class="card bg-dark text-light border border-secondary">
+        <div class="card-body">
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <input type="text"
+                           name="question"
+                           class="form-control"
+                           placeholder="Example: What is the International Space Station?"
+                           value="{{ question }}"
+                           required>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-info px-4">
+                        Ask AI
+                    </button>
+                </div>
+            </form>
+
+            {% if answer %}
+                <hr>
+                <h6 class="text-info">Answer:</h6>
+                <p>{{ answer }}</p>
+            {% endif %}
+
+            {% if error %}
+                <hr>
+                <div class="alert alert-warning">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
